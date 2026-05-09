@@ -83,7 +83,30 @@ DT-DKD was tested on the **CIFAR-100** and **PlantVillage** datasets. It consist
 
 **Why use an MLP instead of a single number?** A single fixed temperature treats every image in a batch the same way. By using an MLP that looks at the student's actual outputs, the model can adjust the temperature for every individual sample. This helps the system adapt to how difficult a specific image is or how confused the student is about certain classes.
 
+**Why use adverserial mechanism?** The MLP temperature predictors can not simply be trained jointly with the student to minimise the distillation loss as if $\phi_T$ and $\phi_N$ are trained to minimise the distillation loss, they immediately discover that
+t-->0
+As $\tau\to 0$, both teacher and student distributions sharpen toward one-hot
+vectors.
+The KL divergence between two near-identical one-hot vectors collapses to zero, the loss is minimised trivially without the student learning anything.
+Hence adverserial needed for a temperature that is simultaneously hard enough to push the
+student to keep improving. $\phi_T$ and $\phi_N$
+are trained to maximise the distillation loss, finding temperatures that
+make it as hard as possible for the student to minimise, while the student is
+simultaneously trained to overcome this harder objective.
+
+**Why use a GRL?** Running two separate optimisation loops per step is computationally wasteful.
+Instead, we implement the adversarial update efficiently using a Gradient
+Reversal Layer, which handles both student and temparature updates in a
+single forward-backward pass.
+
+**Why use a GRL scheduler?** Running the adversarial game at full strength from the very beginning of training
+is harmful as at initialisation the student is nearly random, and immediately
+maximum adversarial pressure produces an optimisation landscape that is too
+difficult to learn.
+
 **Why use a cosine schedule for the GRL?** Other methods often use a sigmoid schedule that gets difficult too quickly at the start and then stays flat. A cosine schedule spreads the difficulty increase more evenly across the whole training process. This change alone gave us a +0.46% boost on CIFAR-100.
+
+
 
 
 ---
