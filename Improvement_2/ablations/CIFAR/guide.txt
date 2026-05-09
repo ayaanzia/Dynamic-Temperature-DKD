@@ -1,1 +1,0 @@
-This directory contains the ablations for DT-DKD on CIFAR-100.
