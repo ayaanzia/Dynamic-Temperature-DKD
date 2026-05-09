@@ -11,7 +11,7 @@ One of the most important settings in this process is the softmax temperature τ
 This project introduces **DT-DKD (Dynamic Temperature Decoupled Knowledge Distillation)**. Here is how it works:
 
 1. It uses the **Decoupled Knowledge Distillation (DKD)** framework (Zhao et al., 2022) as a foundation. This method splits the distillation loss into two parts: **Target-Class KD (TCKD)** and **Non-Target-Class KD (NCKD)**.
-2. It gives each of these parts its own temperature that the model learns on its own. These temperatures are predicted by a simple MLP that looks at the student's current outputs.
+2. It gives each of these parts its own te mperature that the model learns on its own. These temperatures are predicted by a simple MLP that looks at the student's current outputs.
 3. The temperature module is trained using an adversarial approach with a Gradient Reversal Layer (GRL). We use a cosine schedule to make the distillation harder as the student gets better at the task.
 
 DT-DKD was tested on the **CIFAR-100** and **PlantVillage** datasets. It consistently performs better than the standard DKD and CTKD baselines without adding any significant computational cost or needing extra validation data.
@@ -46,6 +46,10 @@ DT-DKD was tested on the **CIFAR-100** and **PlantVillage** datasets. It consist
 │       │   ├── ...
 │       └── PlantVillage/           # Selected ablation notebooks for PlantVillage
 │           ├── ...
+│
+├── Improvement 1/                  # DKD + CTKD
+│   ├── Improvement1_CIFAR100.ipynb       
+│   ├── Improvement1_PlantVillage.ipynb
 │
 ├── baselines/                      # All baseline implementations
 │   ├── ...
